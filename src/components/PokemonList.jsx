@@ -44,6 +44,16 @@ function PokemonList({ onSelect }) {
             })
           );
 
+          // 특성도 한글로
+          const abilities = await Promise.all(
+            detailData.abilities.map(async (a) => {
+              const res = await fetch(a.ability.url);
+              const data = await res.json();
+              const ko = data.names.find((n) => n.language.name === "ko");
+              return ko?.name ?? a.ability.name;
+            })
+          );
+
           return {
             id,
             name: koreanNameObj?.name ?? p.name,
@@ -55,7 +65,7 @@ function PokemonList({ onSelect }) {
               name: s.stat.name,
               value: s.base_stat,
             })),
-            abilities: detailData.abilities.map((a) => a.ability.name),
+            abilities,
             flavor: (() => {
               const flavor = speciesData.flavor_text_entries.find(
                 (f) => f.language.name === "ko"
