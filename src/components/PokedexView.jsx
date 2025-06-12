@@ -32,54 +32,43 @@ function PokedexView({ pokemon }) {
   if (!pokemon) return <p className="text-center mt-8">포켓몬을 선택하세요.</p>;
 
   return (
-    <div className="w-full max-w-md mx-auto bg-gray-900 p-6 rounded-xl shadow-lg border-2 border-gray-600 min-h-[700px]">
-      {/* 이미지 */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <img
-          src={pokemon.image}
-          alt={pokemon.name}
-          className="mx-auto w-56 drop-shadow-lg"
-        />
-      </div>
-
-      {/* 이름 + 번호 */}
-      <h2 className="text-3xl font-bold mt-4">
+    <div className="text-center text-sm">
+      <img
+        src={pokemon.image}
+        alt={pokemon.name}
+        className="mx-auto w-40 h-40 object-contain drop-shadow"
+      />
+      <h2 className="text-xl font-bold mt-2">
         {pokemon.name} <span className="text-gray-400">#{pokemon.id}</span>
       </h2>
 
-      {/* 타입 뱃지 */}
       <div className="flex justify-center gap-2 mt-2">
         {pokemon.types.map((type, idx) => (
           <span
             key={idx}
-            className="px-3 py-1 text-sm rounded-full font-semibold text-white border shadow-sm"
-            style={{
-              backgroundColor: typeColorMap[type] || "#666",
-              borderColor: "#222",
-            }}
+            className="px-2 py-1 text-xs rounded-full font-semibold text-white border shadow-sm"
+            style={{ backgroundColor: typeColorMap[type] || "#999" }}
           >
             {type}
           </span>
         ))}
       </div>
 
-      {/* 키/몸무게 */}
       {(pokemon.height || pokemon.weight) && (
-        <p className="mt-2 text-gray-300 text-sm">
+        <p className="mt-2 text-gray-300 text-xs">
           키: {(pokemon.height / 10).toFixed(1)} m · 몸무게:{" "}
           {(pokemon.weight / 10).toFixed(1)} kg
         </p>
       )}
 
-      {/* 능력치 */}
-      <div className="mt-4 space-y-2 text-left">
+      <div className="mt-2 space-y-1 text-left">
         {pokemon.stats.map((s, idx) => (
           <div key={idx}>
-            <div className="flex justify-between text-sm text-gray-300">
+            <div className="flex justify-between text-xs text-gray-300">
               <span>{statNameMap[s.name] || s.name}</span>
               <span>{s.value}</span>
             </div>
-            <div className="w-full h-2 bg-gray-700 rounded">
+            <div className="w-full h-1 bg-gray-700 rounded">
               <div
                 className="h-full rounded bg-green-500"
                 style={{ width: `${Math.min(s.value, 100)}%` }}
@@ -89,17 +78,15 @@ function PokedexView({ pokemon }) {
         ))}
       </div>
 
-      {/* 특성 */}
       {pokemon.abilities?.length > 0 && (
-        <p className="mt-4 text-sm text-gray-200">
+        <p className="mt-2 text-xs text-gray-200">
           <span className="font-semibold">특성:</span>{" "}
           {pokemon.abilities.join(", ")}
         </p>
       )}
 
-      {/* 설명문 */}
       {pokemon.flavor && (
-        <p className="mt-4 text-base text-gray-300 italic border-t border-gray-700 pt-3 leading-relaxed">
+        <p className="mt-2 text-[13px] text-gray-100 font-medium leading-snug">
           {pokemon.flavor}
         </p>
       )}
