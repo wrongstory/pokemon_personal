@@ -10,9 +10,18 @@ function PokemonList({ onSelect }) {
       const pokemonList = await Promise.all(
         data.results.map(async (p, index) => {
           const id = index + 1;
+
+          // 한글 이름으로 교체
+          const speciesRes = await fetch(
+            `https://pokeapi.co/api/v2/pokemon-species/${id}`
+          );
+          const speciesData = await speciesRes.json();
+          const koreanNameObj = speciesData.names.find(
+            (e) => e.language.name === "ko"
+          );
           return {
             id,
-            name: p.name,
+            name: koreanNameObj ? koreanNameObj.name : p.name,
             image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
           };
         })
