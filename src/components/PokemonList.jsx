@@ -7,11 +7,18 @@ function PokemonList({ onSelect }) {
     async function fetchData() {
       const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
       const data = await res.json();
+
       const pokemonList = await Promise.all(
         data.results.map(async (p, index) => {
           const id = index + 1;
 
-          // 한글 이름으로 교체
+          // 포켓몬 상세 정보 가져오기
+          const detailRes = await fetch(
+            `https://pokeapi.co/api/v2/pokemon/${id}`
+          );
+          const detailData = await detailRes.json();
+
+          // 포켓몬 이름 한글로 가져오기
           const speciesRes = await fetch(
             `https://pokeapi.co/api/v2/pokemon-species/${id}`
           );
@@ -19,10 +26,29 @@ function PokemonList({ onSelect }) {
           const koreanNameObj = speciesData.names.find(
             (e) => e.language.name === "ko"
           );
+
+          // 타입 이름들
+          const types = await Promise.all(
+            detailData.types.map(async (typeInfo) => {
+              try {
+                const typeRes = await fetch(typeInfo.type.url);
+                const typeData = await typeRes.json();
+                const koreanType = typeData.names.find(
+                  (n) => n.language.name === "ko"
+                );
+                return koreanType?.name ?? "???";
+              } catch (e) {
+                console.error("타입 가져오기 실패:", e);
+                return "???";
+              }
+            })
+          );
+
           return {
             id,
             name: koreanNameObj ? koreanNameObj.name : p.name,
-            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+            image: detailData.sprites.front_default,
+            types,
           };
         })
       );
@@ -42,7 +68,7 @@ function PokemonList({ onSelect }) {
               id: p.id,
               name: p.name,
               image: p.image,
-              types: ["???"], // 추후 상세 fetch로 변경 가능
+              types: p.types, // 추후 상세 fetch로 변경 가능
             })
           }
         >
