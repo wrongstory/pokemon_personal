@@ -1,7 +1,19 @@
+import { useState } from "react";
 import "./App.css";
 
 function App() {
-  return <></>;
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+
+  return (
+    <div>
+      <div>
+        <PokedexView pokemon={selectedPokemon} />
+      </div>
+      <div>
+        <PokemonList onSelect={setSelectedPokemon} />
+      </div>
+    </div>
+  );
 }
 
 export default App;
