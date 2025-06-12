@@ -46,9 +46,22 @@ function PokemonList({ onSelect }) {
 
           return {
             id,
-            name: koreanNameObj ? koreanNameObj.name : p.name,
+            name: koreanNameObj?.name ?? p.name,
             image: detailData.sprites.front_default,
             types,
+            height: detailData.height,
+            weight: detailData.weight,
+            stats: detailData.stats.map((s) => ({
+              name: s.stat.name,
+              value: s.base_stat,
+            })),
+            abilities: detailData.abilities.map((a) => a.ability.name),
+            flavor: (() => {
+              const flavor = speciesData.flavor_text_entries.find(
+                (f) => f.language.name === "ko"
+              );
+              return flavor ? flavor.flavor_text.replace(/\f|\n/g, " ") : "";
+            })(),
           };
         })
       );
@@ -68,7 +81,12 @@ function PokemonList({ onSelect }) {
               id: p.id,
               name: p.name,
               image: p.image,
-              types: p.types, // 추후 상세 fetch로 변경 가능
+              types: p.types,
+              height: p.height,
+              weight: p.weight,
+              stats: p.stats,
+              abilities: p.abilities,
+              flavor: p.flavor,
             })
           }
         >
